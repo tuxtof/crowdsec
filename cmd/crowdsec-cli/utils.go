@@ -216,7 +216,11 @@ func UpgradeConfig(itemType string, name string, force bool) {
 		found = true
 		if v.UpToDate {
 			log.Infof("%s : up-to-date", v.Name)
+
 			if !force {
+				if err = cwhub.DownloadDataIfNeeded(csConfig.Cscli.DataDir, csConfig.Cscli.HubDir, v, false); err != nil {
+					log.Fatalf("%s : download failed : %v", v.Name, err)
+				}
 				continue
 			}
 		}
