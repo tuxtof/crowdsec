@@ -24,7 +24,7 @@ type Parsers struct {
 	PovfwStageFiles []Stagefile
 	Nodes           []Node
 	Povfwnodes      []Node
-	EnricherCtx     []EnricherCtx
+	EnricherCtx     EnricherCtx
 }
 
 func Init(c map[string]interface{}) (*UnixParserCtx, error) {
