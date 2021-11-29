@@ -60,14 +60,19 @@ export LD_OPTS_STATIC=-ldflags "-s -w -X github.com/crowdsecurity/crowdsec/pkg/c
 
 RELDIR = crowdsec-$(BUILD_VERSION)
 
+.PHONY: all
 all: clean test build
 
+.PHONY: build
 build: goversion crowdsec cscli plugins
 
+.PHONY: static
 static: crowdsec_static cscli_static plugins_static
 
+.PHONY: plugins
 plugins: http-plugin slack-plugin splunk-plugin
 
+.PHONY: plugins_static
 plugins_static: http-plugin_static slack-plugin_static splunk-plugin_static
 
 goversion:
@@ -172,8 +177,8 @@ package_static:
 check_release:
 	@if [ -d $(RELDIR) ]; then echo "$(RELDIR) already exists, abort" ;  exit 1 ; fi
 
-.PHONY:
+.PHONY: release
 release: check_release build package
 
-.PHONY:
+.PHONY: release_static
 release_static: check_release static package_static
