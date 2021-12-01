@@ -24,7 +24,7 @@ setup_file() {
 
 @test "cscli alerts list: at startup returns at least one entry: community pull" {
   output=$(sudo cscli alerts list -o json | jq -e '. | length')
-  [[ $output -gt 1 ]]
+  [[ $output -ge 1 ]]
 }
 
 @test "cscli capi status" {
@@ -35,7 +35,6 @@ setup_file() {
   [[ "$stderr" =~ " on https://api.crowdsec.net/" ]]
   [[ "$stderr" =~ "You can successfully interact with Central API (CAPI)" ]]
 }
-
 
 @test "cscli config show" {
   run cscli config show
@@ -64,7 +63,6 @@ setup_file() {
   [ "$output" = "127.0.0.1:8080" ]
 }
 
-
 @test "cscli config backup" {
   tempdir=$(mktemp -u)
   run sudo cscli config backup "${tempdir}"
@@ -86,7 +84,6 @@ setup_file() {
   [[ "$stderr" =~ "You can successfully interact with Local API (LAPI)" ]]
 }
 
-
 @test "cscli metrics" {
   run --separate-stderr sudo cscli metrics
   [ $status -eq 0 ]
@@ -99,4 +96,3 @@ setup_file() {
   [[ "$output" =~ "ROUTE" ]]
   [[ "$output" =~ "MACHINE" ]]
 }
-
