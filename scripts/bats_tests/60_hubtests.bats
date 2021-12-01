@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-LIB="$(dirname "$BATS_TEST_FILENAME")/../lib"
+LIB="$(dirname "$BATS_TEST_FILENAME")/lib"
 #shellcheck source=../lib/wrap-init.sh
 . "$LIB/wrap-init.sh"
 
