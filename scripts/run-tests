@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# NOTE: Running tests in parallel (with -j) does not work here,
+#       since you can't run multiple crowdsec instances.
+
+bats -T ./tests
+
