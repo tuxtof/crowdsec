@@ -11,7 +11,7 @@ fake_log() {
 
 setup_file() {
   echo "# --- $(basename ${BATS_TEST_FILENAME} .bats)" >&3
-  "$SYSTEMCTL" start crowdsec
+  "$SYSTEMCTL" start crowdsec || "$SYSTEMCTL" restart crowdsec
   # this is already present.
   # if we add it here anyway, should we remove in teardown or not?
   #sudo cscli collections install crowdsecurity/sshd

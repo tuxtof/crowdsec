@@ -6,7 +6,7 @@ LIB="$(dirname "$BATS_TEST_FILENAME")/lib"
 
 setup_file() {
   echo "# --- $(basename ${BATS_TEST_FILENAME} .bats)" >&3
-  "$SYSTEMCTL" start crowdsec
+  "$SYSTEMCTL" start crowdsec || "$SYSTEMCTL" restart crowdsec
 }
 
 teardown_file() {
