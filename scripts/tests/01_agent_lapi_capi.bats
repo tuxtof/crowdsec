@@ -88,12 +88,8 @@ setup_file() {
 @test "cscli metrics" {
   run --separate-stderr sudo cscli metrics
   [ $status -eq 0 ]
-  [[ "$stderr" =~ "Acquisition Metrics:" ]]
-  [[ "$stderr" =~ "Parser Metrics:" ]]
   [[ "$stderr" =~ "Local Api Metrics:" ]]
   [[ "$stderr" =~ "Local Api Machines Metrics:" ]]
-  [[ "$output" =~ "SOURCE" ]]
-  [[ "$output" =~ "PARSERS" ]]
   [[ "$output" =~ "ROUTE" ]]
   [[ "$output" =~ "MACHINE" ]]
 }
