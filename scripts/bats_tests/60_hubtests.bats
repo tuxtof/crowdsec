@@ -21,7 +21,9 @@ teardown_file() {
   run git clone --depth 1 https://github.com/crowdsecurity/hub.git "${repodir}"
   [ $status -eq 0 ]
   pushd "${repodir}"
-  run cscli hubtest run --all
+  run cscli hubtest run --all --clean
+  # needed to see what's broken
+  echo "$output"
   [ $status -eq 0 ]
   popd
   rm -rf -- "${repodir}"
