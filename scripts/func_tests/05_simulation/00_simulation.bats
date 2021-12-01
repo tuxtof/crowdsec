@@ -10,6 +10,7 @@ fake_log() {
 }
 
 setup_file() {
+  echo "# --- $(basename ${BATS_TEST_FILENAME})" >&3
   "$SYSTEMCTL" start crowdsec
   # theses is already present.
   # if we add them here anyway, should we remove in teardown or not?

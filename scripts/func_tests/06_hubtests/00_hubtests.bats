@@ -5,6 +5,7 @@ LIB="$(dirname "$BATS_TEST_FILENAME")/../lib"
 . "$LIB/wrap-init.sh"
 
 setup_file() {
+  echo "# --- $(basename ${BATS_TEST_FILENAME})" >&3
   "$SYSTEMCTL" start crowdsec
 }
 
