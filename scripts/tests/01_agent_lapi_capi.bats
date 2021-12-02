@@ -19,14 +19,14 @@ setup() {
 @test "cscli version" {
   run cscli version
   [ $status -eq 0 ]
-  [[ "$output" =~ "version:" ]]
-  [[ "$output" =~ "Codename:" ]]
-  [[ "$output" =~ "BuildDate:" ]]
-  [[ "$output" =~ "GoVersion:" ]]
-  [[ "$output" =~ "Constraint_parser:" ]]
-  [[ "$output" =~ "Constraint_scenario:" ]]
-  [[ "$output" =~ "Constraint_api:" ]]
-  [[ "$output" =~ "Constraint_acquis:" ]]
+  assert_output --partial "version:"
+  assert_output --partial "Codename:"
+  assert_output --partial "BuildDate:"
+  assert_output --partial "GoVersion:"
+  assert_output --partial "Constraint_parser:"
+  assert_output --partial "Constraint_scenario:"
+  assert_output --partial "Constraint_api:"
+  assert_output --partial "Constraint_acquis:"
 }
 
 @test "cscli alerts list: at startup returns at least one entry: community pull" {
@@ -46,10 +46,10 @@ setup() {
 @test "cscli config show" {
   run cscli config show
   [ $status -eq 0 ]
-  [[ "$output" =~ "Global:" ]]
-  [[ "$output" =~ "Crowdsec:" ]]
-  [[ "$output" =~ "cscli:" ]]
-  [[ "$output" =~ "Local API Server:" ]]
+  assert_output --partial "Global:"
+  assert_output --partial "Crowdsec:" ]]
+  assert_output --partial "cscli:" ]]
+  assert_output --partial "Local API Server:" ]]
 }
 
 @test "cscli config show -o json" {
@@ -67,14 +67,14 @@ setup() {
 @test "cscli config show --key" {
   run sudo cscli config show --key Config.API.Server.ListenURI
   [ $status -eq 0 ]
-  [ "$output" = "127.0.0.1:8080" ]
+  assert_output "127.0.0.1:8080"
 }
 
 @test "cscli config backup" {
   tempdir=$(mktemp -u)
   run sudo cscli config backup "${tempdir}"
   [ $status -eq 0 ]
-  [[ "$output" =~ "Starting configuration backup" ]]
+  assert_output --partial "Starting configuration backup"
   run --separate-stderr sudo cscli config backup "${tempdir}"
   [[ $status -eq 1 ]]
   [[ "$stderr" =~ "Failed to backup configurations" ]]
@@ -96,6 +96,6 @@ setup() {
   [ $status -eq 0 ]
   [[ "$stderr" =~ "Local Api Metrics:" ]]
   [[ "$stderr" =~ "Local Api Machines Metrics:" ]]
-  [[ "$output" =~ "ROUTE" ]]
-  [[ "$output" =~ "MACHINE" ]]
+  assert_output --partial "ROUTE"
+  assert_output --partial "MACHINE"
 }

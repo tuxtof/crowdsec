@@ -40,7 +40,7 @@ setup() {
 @test "systemctl status shows an active process" {
   run "$SYSTEMCTL" status crowdsec
   [ $status -eq 0 ]
-  [[ "$output" =~ "active (running)" ]]
+  assert_output --partial "active (running)"
 }
 
 @test "crowdsec process is running" {
@@ -58,7 +58,7 @@ setup() {
 @test "systemctl status shows an inactive process" {
   run "$SYSTEMCTL" status crowdsec
   [ $status -eq 3 ]
-  [[ "$output" =~ "inactive (dead)" ]]
+  assert_output --partial "inactive (dead)"
 }
 
 @test "crowdsec process is not running" {
@@ -71,7 +71,7 @@ setup() {
 @test "systemctl can start crowdsec" {
   run "$SYSTEMCTL" start crowdsec
   [ $status -eq 0 ]
-  [[ "$output" = "" ]]
+  assert_output ""
 }
 
 @test "crowdsec process is running again" {

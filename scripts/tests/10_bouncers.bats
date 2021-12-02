@@ -24,13 +24,13 @@ setup() {
 @test "there are 0 bouncers" {
   run sudo cscli bouncers list -o json
   [ $status -eq 0 ]
-  [[ "$output" = "[]" ]]
+  assert_output "[]"
 }
 
 @test "we can add one bouncer" {
   run sudo cscli bouncers add ciTestBouncer
   [ $status -eq 0 ]
-  [[ "$output" =~ "Api key for 'ciTestBouncer':" ]]
+  assert_output --partial "Api key for 'ciTestBouncer':"
 }
 
 @test "we can't add the same bouncer twice" {

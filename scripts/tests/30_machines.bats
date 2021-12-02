@@ -37,9 +37,8 @@ setup() {
 @test "add a new machine" {
   run sudo cscli machines add -a -f /dev/null CiTestMachine -o human
   [ $status -eq 0 ]
-  echo $output
-  [[ "$output" =~ "Machine 'CiTestMachine' successfully added to the local API" ]]
-  [[ "$output" =~ "API credentials dumped to '/dev/null'" ]]
+  assert_output --partial "Machine 'CiTestMachine' successfully added to the local API"
+  assert_output --partial "API credentials dumped to '/dev/null'"
 }
 
 @test "we now have two machines" {
@@ -53,8 +52,7 @@ setup() {
 @test "delete the test machine" {
   run sudo cscli machines delete CiTestMachine -o human
   [ $status -eq 0 ]
-  echo $output
-  [[ "$output" =~ "machine 'CiTestMachine' deleted successfully" ]]
+  assert_output --partial "machine 'CiTestMachine' deleted successfully"
 }
 
 @test "we now have one machine again" {
@@ -66,8 +64,8 @@ setup() {
 @test "register a machine" {
   run sudo cscli lapi register --machine CiTestMachineRegister -f /dev/null -o human
   [ $status -eq 0 ]
-  [[ "$output" =~ "Successfully registered to Local API (LAPI)" ]]
-  [[ "$output" =~ "Local API credentials dumped to '/dev/null'" ]]
+  assert_output --partial "Successfully registered to Local API (LAPI)"
+  assert_output --partial "Local API credentials dumped to '/dev/null'"
 }
 
 @test "the machine is not validated yet" {
@@ -79,9 +77,9 @@ setup() {
 @test "validate the machine" {
   run sudo cscli machines validate CiTestMachineRegister -o human
   [ $status -eq 0 ]
-  [[ "$output" =~ "machine 'CiTestMachineRegister' validated" ]]
+  assert_output --partial "machine 'CiTestMachineRegister' validated"
   # TODO
-  #[[ "$output" =~ "machine 'CiTestMachineRegister' validated successfully" ]]
+  #assert_output --partial "machine 'CiTestMachineRegister' validated successfully"
 }
 
 @test "the machine is now validated" {
@@ -93,8 +91,7 @@ setup() {
 @test "delete the test machine again" {
   run sudo cscli machines delete CiTestMachineRegister -o human
   [ $status -eq 0 ]
-  echo $output
-  [[ "$output" =~ "machine 'CiTestMachineRegister' deleted successfully" ]]
+  assert_output --partial "machine 'CiTestMachineRegister' deleted successfully"
 }
 
 @test "we now have one machine, again again" {

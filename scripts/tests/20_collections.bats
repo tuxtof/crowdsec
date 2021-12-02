@@ -43,7 +43,7 @@ setup() {
 @test "can install a collection as root" {
   run sudo cscli collections install crowdsecurity/mysql -o human
   [ $status -eq 0 ]
-  [[ "$output" =~ "Enabled crowdsecurity/mysql" ]]
+  assert_output --partial "Enabled crowdsecurity/mysql"
 }
 
 @test "there are now 3 collections" {
@@ -63,7 +63,7 @@ setup() {
 @test "can remove a collection as root" {
   run sudo cscli collections remove crowdsecurity/mysql -o human
   [ $status -eq 0 ]
-  [[ "$output" =~ "Removed symlink [crowdsecurity/mysql]" ]]
+  assert_output --partial "Removed symlink [crowdsecurity/mysql]"
 }
 
 @test "cannot remove a collection twice" {
