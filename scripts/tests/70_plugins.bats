@@ -1,5 +1,26 @@
-#! /usr/bin/env bash
-# -*- coding: utf-8 -*-
+#!/usr/bin/env bats
+
+LIB="$(dirname "$BATS_TEST_FILENAME")/lib"
+. "$LIB/wrap-init.sh"
+
+setup_file() {
+  echo "# --- $(basename ${BATS_TEST_FILENAME} .bats)" >&3
+  "$SYSTEMCTL" start crowdsec || "$SYSTEMCTL" restart crowdsec
+  # TODO remove all the bouncers?
+}
+
+teardown_file() {
+:
+  # TODO remove all the bouncers?
+}
+
+setup() {
+  load 'test_helper/bats-support/load'
+  load 'test_helper/bats-assert/load'
+}
+
+#----------
+
 
 #source tests_base.sh
 #

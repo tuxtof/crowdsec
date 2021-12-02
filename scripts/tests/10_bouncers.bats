@@ -14,6 +14,11 @@ teardown_file() {
   # TODO remove all the bouncers?
 }
 
+setup() {
+  load 'test_helper/bats-support/load'
+  load 'test_helper/bats-assert/load'
+}
+
 #----------
 
 @test "there are 0 bouncers" {

@@ -6,9 +6,15 @@ LIB="$(dirname "$BATS_TEST_FILENAME")/lib"
 setup_file() {
   echo "# --- $(basename ${BATS_TEST_FILENAME} .bats)" >&3
   "$SYSTEMCTL" start crowdsec || "$SYSTEMCTL" restart crowdsec
+  # sudo cscli scenarios install crowdsecurity/ssh-bf
 }
 
-#-------
+setup() {
+  load 'test_helper/bats-support/load'
+  load 'test_helper/bats-assert/load'
+}
+
+#----------
 
 @test "cscli version" {
   run cscli version

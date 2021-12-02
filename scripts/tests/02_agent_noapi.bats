@@ -8,7 +8,12 @@ setup_file() {
   "$SYSTEMCTL" start crowdsec || "$SYSTEMCTL" restart crowdsec
 }
 
-#-------
+setup() {
+  load 'test_helper/bats-support/load'
+  load 'test_helper/bats-assert/load'
+}
+
+#----------
 
 
 # 

@@ -12,7 +12,13 @@ teardown_file() {
   "$SYSTEMCTL" stop crowdsec
 }
 
-#
+setup() {
+  load 'test_helper/bats-support/load'
+  load 'test_helper/bats-assert/load'
+}
+
+#----------
+
 # "systemctl status" return codes
 #
 # https://refspecs.linuxfoundation.org/LSB_5.0.0/LSB-Core-generic/LSB-Core-generic.html#INISCRPTACT

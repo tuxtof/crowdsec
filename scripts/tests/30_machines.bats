@@ -12,6 +12,11 @@ teardown_file() {
 :
 }
 
+setup() {
+  load 'test_helper/bats-support/load'
+  load 'test_helper/bats-assert/load'
+}
+
 #----------
 
 @test "can't list machines as regular user" {

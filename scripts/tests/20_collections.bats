@@ -6,10 +6,16 @@ LIB="$(dirname "$BATS_TEST_FILENAME")/lib"
 setup_file() {
   echo "# --- $(basename ${BATS_TEST_FILENAME} .bats)" >&3
   "$SYSTEMCTL" start crowdsec || "$SYSTEMCTL" restart crowdsec
+#  run cscli collections install crowdsecurity/sshd
 }
 
 teardown_file() {
 :
+}
+
+setup() {
+  load 'test_helper/bats-support/load'
+  load 'test_helper/bats-assert/load'
 }
 
 #----------
