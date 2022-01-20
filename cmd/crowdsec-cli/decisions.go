@@ -79,8 +79,12 @@ func DecisionsToTable(alerts *models.GetAlertsResponse) error {
 		}
 		csvwriter.Flush()
 	} else if csConfig.Cscli.Output == "json" {
-		x, _ := json.MarshalIndent(alerts, "", " ")
-		fmt.Printf("%s", string(x))
+		if len(*alerts) == 0 {
+			fmt.Println("[]")
+		} else {
+			x, _ := json.MarshalIndent(alerts, "", " ")
+			fmt.Println(string(x))
+		}
 	} else if csConfig.Cscli.Output == "human" {
 
 		table := tablewriter.NewWriter(os.Stdout)
