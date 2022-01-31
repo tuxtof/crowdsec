@@ -1,0 +1,3 @@
+# Having .git outside of the build context would break the "make release"
+# target, which uses git to retrieve the build version and tag.
+#.git
