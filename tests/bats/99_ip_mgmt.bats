@@ -16,22 +16,22 @@ CSCLI="${BIN_DIR}/cscli"
 
 setup_file() {
     echo "# --- $(basename "${BATS_TEST_FILENAME}" .bats)" >&3
-    "${TEST_DIR}/instance-data" load
-    "${TEST_DIR}/instance-crowdsec" start
-    API_KEY=$("${CSCLI}" bouncers add testbouncer -o raw)
 }
 
 teardown_file() {
-    "${TEST_DIR}/instance-crowdsec" stop
+    :
 }
 
 setup() {
     load "${LIB}/bats-support/load.bash"
     load "${LIB}/bats-assert/load.bash"
+    "${TEST_DIR}/instance-data" load
+    "${TEST_DIR}/instance-crowdsec" start
+    API_KEY=$("${CSCLI}" bouncers add testbouncer -o raw)
 }
 
 teardown() {
-    :
+    "${TEST_DIR}/instance-crowdsec" stop
 }
 
 #----------
