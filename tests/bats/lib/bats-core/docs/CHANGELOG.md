@@ -10,12 +10,16 @@ The format is based on [Keep a Changelog][kac] and this project adheres to
 
 ## [Unreleased]
 
+## [1.6.0] - 2022-02-24
+
 ### Added
 
 * new flag `--code-quote-style` (and `$BATS_CODE_QUOTE_STYLE`) to customize
 quotes around code blocks in error output (#506)
 * an example/regression test for running background tasks without blocking the
   test run (#525, #535)
+* `bats_load_library` for loading libraries from the search path
+  `$BATS_LIB_PATH` (#548)
 
 ### Fixed
 
@@ -25,6 +29,7 @@ quotes around code blocks in error output (#506)
 * fix recurring errors on CTRL+C tests with NPM on Windows in selftest suite (#516)
 * fixed leaking of local variables from debug trap (#520)
 * don't mark FD3 output from `teardown_file` as `<failure>` in junit output (#532)
+* fix unbound variable error with Bash pre 4.4 (#550)
 
 #### Documentation
 

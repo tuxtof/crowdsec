@@ -30,6 +30,8 @@ while [[ "$#" -ne 0 ]]; do
     # shellcheck disable=SC2034
     BATS_EXTENDED_SYNTAX='-x'
     ;;
+  --dummy-flag)
+    ;;
   --trace)
     (( ++BATS_TRACE_LEVEL )) # avoid returning 0
     ;;
@@ -163,7 +165,7 @@ bats_exit_trap() {
   fi
 
   if [[ $print_bats_out ]]; then
-    bats_prefix_lines_for_tap_output < "$BATS_OUT" >&3
+    bats_prefix_lines_for_tap_output < "$BATS_OUT" | bats_replace_filename >&3
   fi
 
   if [[ $BATS_GATHER_TEST_OUTPUTS_IN ]]; then
