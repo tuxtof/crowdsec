@@ -54,6 +54,29 @@ teardown() {
     assert_failure 1
 }
 
+@test "cscli config show -o human" {
+    yq 'del(.api.server)' -i "${CONFIG_DIR}/config.yaml"
+    run "${CSCLI}" config show -o human
+    assert_success
+    assert_output --partial "Global:"
+    assert_output --partial "Crowdsec:"
+    assert_output --partial "cscli:"
+    refute_output --partial "Local API Server:"
+}
+
+@test "cscli config backup" {
+    yq 'del(.api.server)' -i "${CONFIG_DIR}/config.yaml"
+    tempdir=$(mktemp -u)
+    run "${CSCLI}" config backup "${tempdir}"
+    assert_success
+    assert_output --partial "Starting configuration backup"
+    run --separate-stderr "${CSCLI}" config backup "${tempdir}"
+    assert_failure
+    [[ "$stderr" == *"Failed to backup configurations"* ]]
+    [[ "$stderr" == *"file exists"* ]]
+    rm -rf -- "${tempdir:?}"
+}
+
 @test "lapi status shouldn't be ok without api.server" {
     yq 'del(.api.server)' -i "${CONFIG_DIR}/config.yaml"
     run --separate-stderr "${CSCLI}" lapi status
@@ -63,10 +86,14 @@ teardown() {
     assert_failure 1
 }
 
-
-# XXX TODO
-# #    ## metrics
-# #    ${CSCLI_BIN} -c ./config/config_no_lapi.yaml metrics
-#
-# #    ${SYSTEMCTL} stop crowdsec
-# #    sudo cp ./config/config.yaml /etc/crowdsec/config.yaml
+@test "cscli metrics" {
+    yq 'del(.api.server)' -i "${CONFIG_DIR}/config.yaml"
+    "${TEST_DIR}/instance-crowdsec" start
+    #"${TEST_DIR}/instance-crowdsec" start-nowait
+    run --separate-stderr "${CSCLI}" metrics
+    assert_success
+    [[ "$stderr" != *"Local Api Metrics:"* ]]
+    assert_output --partial "ROUTE"
+    assert_output --partial "/v1/watchers/login"
+    "${TEST_DIR}/instance-crowdsec" stop
+}
