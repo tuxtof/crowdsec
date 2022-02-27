@@ -1,6 +1,9 @@
 #!/usr/bin/env bats
 # vim: ft=sh:list:ts=8:sts=4:sw=4:et:ai:si:
 
+
+# XXX TODO split in multile files w/ setup_file, teardown_file
+
 set -u
 
 LIB="$(dirname "$BATS_TEST_FILENAME")/lib"
@@ -71,7 +74,11 @@ function cscli_echo {
 }
 
 
-@test "test ipv4 ip" {
+@test "test ipv4" {
+    #
+    # TEST SINGLE IPV4
+    #
+
     # cscli: first decisions list (must be empty)
     run "${CSCLI}" decisions list -o json
     assert_success
@@ -143,25 +150,39 @@ function cscli_echo {
     run jq -r '.[0].value' <(echo "$output")
     assert_success
     assert_output "1.2.3.4"
-}
 
+    #
+    # TEST IPV4 RANGE
+    #
 
-@test "test ipv4 range" {
     # cscli: adding decision for range 4.4.4.0/24
     run "${CSCLI}" decisions add -r 4.4.4.0/24
     assert_success
-    refute_output
+    assert_output --partial "Decision successfully added"
 
-#    ${CSCLI} decisions list -o json | ${JQ} '.[0].decisions[0].value == "4.4.4.0/24", .[1].decisions[0].value == "1.2.3.4"'> /dev/null || fail
-#    cscli_echo "getting all decision"
-#    
-#    docurl ${APIK} "/v1/decisions" | ${JQ} '.[0].value == "1.2.3.4", .[1].value == "4.4.4.0/24"'> /dev/null || fail
-#    bouncer_echo "getting all decision"
-#
+    # cscli: getting all decisions
+    run "${CSCLI}" decisions list -o json
+    assert_success
+    run jq -r '.[0].decisions[0].value, .[1].decisions[0].value' <(echo "$output")
+    assert_success
+    assert_output $'4.4.4.0/24\n1.2.3.4'
+
+    # bouncer: getting all decisions
+    run docurl '/v1/decisions'
+    assert_success
+    run jq -r '.[0].value, .[1].value' <(echo "$output")
+    assert_success
+    assert_output $'1.2.3.4\n4.4.4.0/24'
+
 #    #check ip within/outside of range
-#    ${CSCLI} decisions list -i 4.4.4.3 -o json | ${JQ} '.[].decisions[0].value == "4.4.4.0/24"' > /dev/null || fail
-#    cscli_echo "getting decisions for ip 4.4.4."
-#
+
+    # cscli: getting decisions for ip 4.4.4.
+    run "${CSCLI}" decisions list -i 4.4.4.3 -o json
+    assert_success
+    run jq -r '.[0].decisions[0].value' <(echo "$output")
+    assert_success
+    assert_output "4.4.4.0/24"
+
 #    docurl ${APIK} "/v1/decisions?ip=4.4.4.3" | ${JQ} '.[0].value == "4.4.4.0/24"' > /dev/null || fail
 #    bouncer_echo "getting decisions for ip 4.4.4."
 #

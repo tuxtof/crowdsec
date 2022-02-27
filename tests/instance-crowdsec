@@ -37,10 +37,16 @@ wait_for_port() {
 DAEMON_PID=${PID_DIR}/daemon.pid
 DAEMON_LOCK=${PID_DIR}/daemon.lock
 
+# start_instance_nowait() {
+#     stop_instance
+#     # XXX requires the daemonize package, or alternative (freebsd->/usr/sbin/daemon)
+#     daemonize -p "${DAEMON_PID}" -l "${DAEMON_LOCK}" -e "${LOG_DIR}/stderr" -o "${LOG_DIR}/stdout" "${BIN_DIR}/crowdsec"
+# }
+
 start_instance() {
     # XXX requires the daemonize package, or alternative (freebsd->/usr/sbin/daemon)
     daemonize -p "${DAEMON_PID}" -l "${DAEMON_LOCK}" -e "${LOG_DIR}/stderr" -o "${LOG_DIR}/stdout" "${BIN_DIR}/crowdsec"
-    wait_for_port 8080
+    wait_for_port 6060
 }
 
 stop_instance() {
@@ -58,6 +64,9 @@ stop_instance() {
 case "$1" in
     start)
         start_instance
+        ;;
+    start-nowait)
+        start_instance_nowait
         ;;
     stop)
         stop_instance
