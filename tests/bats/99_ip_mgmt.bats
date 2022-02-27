@@ -73,7 +73,7 @@ function cscli_echo {
 
 @test "test ipv4 ip" {
     # cscli: first decisions list (must be empty)
-    run ${CSCLI} decisions list -o json
+    run "${CSCLI}" decisions list -o json
     assert_success
     assert_output "null"
 
@@ -83,11 +83,11 @@ function cscli_echo {
     assert_output "null"
 
     # adding decision for 1.2.3.4
-    run ${CSCLI} decisions add -i 1.2.3.4
+    run "${CSCLI}" decisions add -i 1.2.3.4
     assert_success
 
     # cscli: getting all decisions
-    run ${CSCLI} decisions list -o json
+    run "${CSCLI}" decisions list -o json
     assert_success
     run jq -r '.[0].decisions[0].value' <(echo "$output")
     assert_success
@@ -95,16 +95,9 @@ function cscli_echo {
 
     # check ip match
     # cscli: getting decision for 1.2.3.4
-    run ${CSCLI} decisions list -i 1.2.3.4 -o json
+    run "${CSCLI}" decisions list -i 1.2.3.4 -o json
     assert_success
     run jq -r '.[0].decisions[0].value' <(echo "$output")
-    assert_success
-    assert_output "1.2.3.4"
-
-    # bouncer: getting decision for 1.2.3.4
-    run docurl '/v1/decisions?ip=1.2.3.4'
-    assert_success
-    run jq -r '.[0].value' <(echo "$output")
     assert_success
     assert_output "1.2.3.4"
 
@@ -116,7 +109,7 @@ function cscli_echo {
     assert_output "1.2.3.4"
 
     # cscli:  getting decision for 1.2.3.5
-    run ${CSCLI} decisions list -i 1.2.3.5 -o json
+    run "${CSCLI}" decisions list -i 1.2.3.5 -o json
     assert_success
     assert_output "null"
 
@@ -128,7 +121,7 @@ function cscli_echo {
     # check outer range match
 
     # cscli: getting decision for 1.2.3.0/24
-    run ${CSCLI} decisions list -r 1.2.3.0/24 -o json
+    run "${CSCLI}" decisions list -r 1.2.3.0/24 -o json
     assert_success
     assert_output "null"
 
@@ -138,7 +131,7 @@ function cscli_echo {
     assert_output 'null'
 
     # cscli: getting decisions where IP in 1.2.3.0/24
-    run ${CSCLI} decisions list -r 1.2.3.0/24 --contained -o json
+    run "${CSCLI}" decisions list -r 1.2.3.0/24 --contained -o json
     assert_success
     run jq -r '.[0].decisions[0].value' <(echo "$output")
     assert_success
@@ -153,18 +146,12 @@ function cscli_echo {
 }
 
 
-#function test_ipv4_range
-#{
-#    echo ""
-#    echo "##########################################"
-#    echo "$FUNCNAME"
-#    echo "##########################################"
-#    echo ""
-#
-#
-#    cscli_echo "adding decision for range 4.4.4.0/24"
-#    ${CSCLI} decisions add -r 4.4.4.0/24 > /dev/null 2>&1 || fail
-#
+@test "test ipv4 range" {
+    # cscli: adding decision for range 4.4.4.0/24
+    run "${CSCLI}" decisions add -r 4.4.4.0/24
+    assert_success
+    refute_output
+
 #    ${CSCLI} decisions list -o json | ${JQ} '.[0].decisions[0].value == "4.4.4.0/24", .[1].decisions[0].value == "1.2.3.4"'> /dev/null || fail
 #    cscli_echo "getting all decision"
 #    
@@ -217,6 +204,12 @@ function cscli_echo {
 #
 #}
 #
+
+
+
+}
+
+
 #function test_ipv6_ip
 #{
 #
