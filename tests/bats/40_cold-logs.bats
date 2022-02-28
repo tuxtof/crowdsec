@@ -20,12 +20,12 @@ fake_log() {
 setup_file() {
     echo "# --- $(basename "${BATS_TEST_FILENAME}" .bats)" >&3
     # we reset config and data, and only run the daemon once for all the tests in this file
-    ${TEST_DIR}/instance-data load
-    run "${TEST_DIR}/instance-crowdsec" start
-    fake_log | ${CROWDSEC} -dsn file:///dev/fd/0 -type syslog -no-api
+    "${TEST_DIR}/instance-data" load
+    "${TEST_DIR}/instance-crowdsec" start
+    fake_log | "${CROWDSEC}" -dsn file:///dev/fd/0 -type syslog -no-api
     # we could also keep it running for all the tests, but the 
     # check in "assert-crowdsec-not-running.sh" is run AFTER setup_file
-    run "${TEST_DIR}/instance-crowdsec" stop
+    "${TEST_DIR}/instance-crowdsec" stop
 }
 
 teardown_file() {
@@ -35,11 +35,11 @@ teardown_file() {
 setup() {
     load "${LIB}/bats-support/load.bash"
     load "${LIB}/bats-assert/load.bash"
-    run "${TEST_DIR}/instance-crowdsec" start
+    "${TEST_DIR}/instance-crowdsec" start
 }
 
 teardown() {
-    run "${TEST_DIR}/instance-crowdsec" stop
+    "${TEST_DIR}/instance-crowdsec" stop
 }
 
 #----------
