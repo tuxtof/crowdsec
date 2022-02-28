@@ -7,8 +7,9 @@ LIB="$(dirname "$BATS_TEST_FILENAME")/lib"
 #shellcheck source=tests/bats/lib/assert-crowdsec-not-running.sh
 . "${LIB}/assert-crowdsec-not-running.sh"
 
-#declare stderr
-#CSCLI="${BIN_DIR}/cscli"
+declare stderr
+CSCLI="${BIN_DIR}/cscli"
+CROWDSEC="${BIN_DIR}/crowdsec"
 
 
 setup_file() {
@@ -19,7 +20,6 @@ setup() {
     load "${LIB}/bats-support/load.bash"
     load "${LIB}/bats-assert/load.bash"
     "${TEST_DIR}/instance-data" load
-    "${TEST_DIR}/instance-crowdsec" start
 }
 
 teardown() {
@@ -28,31 +28,60 @@ teardown() {
 
 #----------
 
+config_disable_capi() {
+    yq 'del(.api.server.online_client)' -i "${CONFIG_DIR}/config.yaml"
+}
 
-# testAgent_LAPI() {
-#     :
-#     ## test with no online client in configuration file
-#     #sudo cp ./config/config_no_capi.yaml /etc/crowdsec/config.yaml
-#     #${SYSTEMCTL} start crowdsec
-#     #wait_for_service "crowdsec LAPI should run without CAPI (in configuration file)"
-#     #
-#     ### capi
-#     #${CSCLI} -c ./config/config_no_capi.yaml capi status && fail "capi status should not be ok" ## if capi status success, it means that the test fail
-#     ### config
-#     #${CSCLI_BIN} -c ./config/config_no_capi.yaml config show || fail "failed to show config"
-#     #${CSCLI} -c ./config/config_no_capi.yaml config backup ./test || fail "failed to backup config"
-#     #sudo rm -rf ./test
-#     ### lapi
-#     #${CSCLI} -c ./config/config_no_capi.yaml lapi status || fail "lapi status failed"
-#     ### metrics
-#     #${CSCLI_BIN} -c ./config/config_no_capi.yaml metrics || fail "failed to get metrics"
-#     #
-#     #sudo mv /tmp/crowdsec.service-orig /etc/systemd/system/crowdsec.service
-#     #
-#     #sudo cp ./config.yaml.backup /etc/crowdsec/config.yaml
-#     #
-#     #${SYSTEMCTL} daemon-reload
-#     #${SYSTEMCTL} restart crowdsec
-#     #wait_for_service "crowdsec should be restarted)"
-# }
-#
+@test "without capi: crowdsec LAPI should still work" {
+    config_disable_capi
+    run --separate-stderr timeout 1s "${CROWDSEC}"
+    # from `man timeout`: If  the  command  times  out,  and --preserve-status is not set, then exit with status 124.
+    [[ "$stderr" == *"push and pull to Central API disabled"* ]]
+    assert_failure 124
+}
+
+@test "without capi: cscli capi status -> fail" {
+    config_disable_capi
+    "${TEST_DIR}/instance-crowdsec" start
+    run --separate-stderr "${CSCLI}" capi status
+    [[ "$stderr" == *"no configuration for Central API in "* ]]
+    assert_failure
+}
+
+@test "no capi: cscli config show" {
+    config_disable_capi
+    run --separate-stderr "${CSCLI}" config show -o human
+    assert_success
+    assert_output --partial "Global:"
+    assert_output --partial "cscli:"
+    assert_output --partial "Crowdsec:"
+    assert_output --partial "Local API Server:"
+}
+
+@test "no agent: cscli config backup" {
+    config_disable_capi
+    tempdir=$(mktemp -u)
+    run "${CSCLI}" config backup "${tempdir}"
+    assert_success
+    assert_output --partial "Starting configuration backup"
+    run --separate-stderr "${CSCLI}" config backup "${tempdir}"
+    assert_failure
+    [[ "$stderr" == *"Failed to backup configurations"* ]]
+    [[ "$stderr" == *"file exists"* ]]
+    rm -rf -- "${tempdir:?}"
+}
+
+@test "without capi: cscli lapi status -> success" {
+    config_disable_capi
+    "${TEST_DIR}/instance-crowdsec" start
+    run --separate-stderr "${CSCLI}" lapi status
+    assert_success
+    [[ "$stderr" == *"You can successfully interact with Local API (LAPI)"* ]]
+}
+
+@test "cscli metrics" {
+    config_disable_capi
+    "${TEST_DIR}/instance-crowdsec" start
+    run --separate-stderr "${CSCLI}" metrics
+    assert_success
+}

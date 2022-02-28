@@ -55,7 +55,6 @@ config_disable_agent() {
     run --separate-stderr "${CSCLI}" capi status
     [[ "$stderr" == *"You can successfully interact with Central API (CAPI)"* ]]
     assert_success
-    "${TEST_DIR}/instance-crowdsec" stop
 }
 
 @test "no agent: cscli config show" {
@@ -88,7 +87,6 @@ config_disable_agent() {
     run --separate-stderr "${CSCLI}" lapi status
     [[ "$stderr" == *"You can successfully interact with Local API (LAPI)"* ]]
     assert_success
-    "${TEST_DIR}/instance-crowdsec" stop
 }
 
 @test "cscli metrics" {
@@ -96,5 +94,4 @@ config_disable_agent() {
     "${TEST_DIR}/instance-crowdsec" start
     run --separate-stderr "${CSCLI}" metrics
     assert_success
-    "${TEST_DIR}/instance-crowdsec" stop
 }

@@ -91,7 +91,6 @@ teardown() {
     skip
     yq 'del(.api.server)' -i "${CONFIG_DIR}/config.yaml"
     "${TEST_DIR}/instance-crowdsec" start
-    #"${TEST_DIR}/instance-crowdsec" start-nowait
     run --separate-stderr "${CSCLI}" metrics
     assert_success
     [[ "$stderr" != *"Local Api Metrics:"* ]]
