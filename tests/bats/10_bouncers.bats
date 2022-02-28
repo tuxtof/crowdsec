@@ -28,7 +28,6 @@ setup() {
 
 teardown() {
     "${TEST_DIR}/instance-crowdsec" stop
-    # TODO remove all the bouncers?
 }
 
 #----------
