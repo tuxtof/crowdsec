@@ -52,7 +52,8 @@ larger test suite. The TAP specification is pretty minimalist and some glue may 
 
 Other tools that you can find useful:
 
- - [mikefarah/yq](https://github.com/mikefarah/yq)
+ - [mikefarah/yq](https://github.com/mikefarah/yq) - to parse and update YAML files on the fly
+ - [aliou/bats.vim](https://github.com/aliou/bats.vim) - for syntax highlighting (use bash otherwise)
 
 Testing crowdsec
 ----------------

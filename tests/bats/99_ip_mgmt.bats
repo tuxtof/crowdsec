@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# vim: ft=sh:list:ts=8:sts=4:sw=4:et:ai:si:
+# vim: ft=bats:list:ts=8:sts=4:sw=4:et:ai:si:
 
 
 # XXX TODO split in multile files w/ setup_file, teardown_file
@@ -10,7 +10,7 @@ LIB="$(dirname "$BATS_TEST_FILENAME")/lib"
 #shellcheck source=tests/bats/lib/assert-crowdsec-not-running.sh
 . "${LIB}/assert-crowdsec-not-running.sh"
 
-declare stderr
+#declare stderr
 CSCLI="${BIN_DIR}/cscli"
 
 

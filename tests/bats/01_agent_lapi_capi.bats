@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# vim: ft=sh:list:ts=8:sts=4:sw=4:et:ai:si:
+# vim: ft=bats:list:ts=8:sts=4:sw=4:et:ai:si:
 
 set -u
 
@@ -132,5 +132,5 @@ teardown() {
     assert_success
     [[ "$stderr" == *"Local Api Metrics:"* ]]
     assert_output --partial "ROUTE"
-    assert_output --partial "/v1/watchers/login"
+    assert_output --partial '/v1/watchers/login'
 }
