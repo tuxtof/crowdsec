@@ -19,13 +19,12 @@ setup_file() {
 setup() {
     load "${LIB}/bats-support/load.bash"
     load "${LIB}/bats-assert/load.bash"
-    # reset config and data but don't run the daemon at each test
+    # always reset config and data, but run the daemon only if one test requires it
     "${TEST_DIR}/instance-data" load
 }
 
 teardown() {
-    # the crowdsec daemon may be left running by the tests which run it,
-    # in case of errors
+    # the crowdsec daemon can be left running by a tests which ran it, if the test failed
     "${TEST_DIR}/instance-crowdsec" stop
 }
 
